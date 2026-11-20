@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Heimat Distillers – Messe-Umfrage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --fg: #000000;
+    --muted: #666666;
+    --soft: #ececec;
+    color-scheme: light;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) { --bg:#000000; --fg:#ffffff; --muted:#a0a0a0; --soft:#1e1e1e; color-scheme: dark; }
+  }
+  :root[data-theme="dark"] { --bg:#000000; --fg:#ffffff; --muted:#a0a0a0; --soft:#1e1e1e; color-scheme: dark; }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 17px;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior: none;
+  }
+
+  /* Kopfzeile */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.1rem clamp(1.1rem, 4vw, 2.5rem);
+    border-bottom: 2px solid var(--fg);
+  }
+  .mark {
+    line-height: .9;
+    user-select: none;
+    -webkit-user-select: none;
+    cursor: default;
+  }
+  .mark b {
+    display: block;
+    font-weight: 900;
+    font-stretch: 125%;
+    font-size: 1.55rem;
+    letter-spacing: .02em;
+  }
+  .mark span {
+    display: block;
+    font-weight: 500;
+    font-stretch: 125%;
+    font-size: .7rem;
+    letter-spacing: .42em;
+    margin-top: .3rem;
+  }
+  .progress { display: flex; gap: 6px; }
+  .progress i {
+    display: block;
+    width: clamp(18px, 5vw, 34px);
+    height: 6px;
+    border: 1.5px solid var(--fg);
+  }
+  .progress i.on { background: var(--fg); }
+
+  /* Inhalt */
+  main {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.4rem, 5vh, 3.5rem) clamp(1.1rem, 4vw, 2.5rem);
+  }
+  .wrap { width: 100%; max-width: 640px; margin: auto; }
+  h1, h2 { margin: 0; outline: none; }
+
+  .count {
+    font-weight: 900;
+    font-stretch: 62%;
+    font-size: clamp(4.5rem, 16vw, 7.5rem);
+    line-height: .8;
+    margin-bottom: 1.2rem;
+  }
+  .count small { font-size: .32em; font-weight: 500; color: var(--muted); margin-left: .2em; }
+  .q {
+    font-weight: 800;
+    font-stretch: 75%;
+    font-size: clamp(1.7rem, 5.4vw, 2.6rem);
+    line-height: 1.08;
+    margin-bottom: 1.8rem;
+    max-width: 22ch;
+  }
+
+  .opts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .opt {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: .9rem 1.1rem;
+    font: inherit;
+    font-size: 1.12rem;
+    font-weight: 500;
+    text-align: left;
+    color: var(--fg);
+    background: var(--bg);
+    border: 2px solid var(--fg);
+    border-radius: 0;
+    cursor: pointer;
+    touch-action: manipulation;
+    transition: background-color .18s, color .18s;
+  }
+  .opt .key {
+    flex: none;
+    width: 1.9rem; height: 1.9rem;
+    display: grid; place-items: center;
+    border: 1.5px solid currentColor;
+    font-size: .85rem; font-weight: 700;
+  }
+  .opt[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+  @media (hover: hover) {
+    .opt:hover { background: var(--soft); }
+    .opt[aria-pressed="true"]:hover { background: var(--fg); }
+  }
+
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 56px;
+    padding: .8rem 1.6rem;
+    font: inherit; font-weight: 700; font-size: 1.05rem;
+    color: var(--bg); background: var(--fg);
+    border: 2px solid var(--fg); border-radius: 0;
+    cursor: pointer; touch-action: manipulation;
+  }
+  .btn.ghost { color: var(--fg); background: transparent; }
+  .btn.warn[data-armed="true"] { color: var(--bg); background: var(--fg); }
+  .link {
+    font: inherit; font-size: .95rem; font-weight: 600;
+    color: var(--muted); background: none; border: 0;
+    padding: .7rem 0; cursor: pointer; touch-action: manipulation;
+    text-decoration: underline; text-underline-offset: 3px;
+  }
+  .link:hover { color: var(--fg); }
+  :focus-visible { outline: 3px solid var(--fg); outline-offset: 3px; }
+  .opt:focus-visible { outline-offset: 4px; }
+
+  .nav { display: flex; justify-content: space-between; align-items: center; margin-top: 1.4rem; min-height: 44px; }
+  .hint { font-size: .85rem; color: var(--muted); }
+
+  /* Start & Danke */
+  .hero {
+    font-weight: 900;
+    font-stretch: 62%;
+    font-size: clamp(3.6rem, 15vw, 7rem);
+    line-height: .86;
+    margin-bottom: 1.4rem;
+  }
+  .lead { font-size: 1.15rem; max-width: 34ch; margin: 0 0 2rem; }
+  .meta { margin-top: 1.4rem; font-size: .9rem; color: var(--muted); }
+
+  /* Auswertung */
+  .admin h2 { font-weight: 800; font-stretch: 75%; font-size: 2rem; margin-bottom: .3rem; }
+  .admin .total { color: var(--muted); margin: 0 0 1.6rem; }
+  .stat { margin: 0 0 1.6rem; }
+  .stat h3 { font-size: 1rem; margin: 0 0 .6rem; font-weight: 700; }
+  .row { display: grid; grid-template-columns: 1fr auto; gap: .2rem .8rem; font-size: .92rem; margin-bottom: .55rem; }
+  .bar { grid-column: 1 / -1; height: 8px; border: 1.5px solid var(--fg); }
+  .bar > div { height: 100%; background: var(--fg); }
+  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 1rem; }
+  .notice { border: 2px solid var(--fg); padding: .8rem 1rem; margin-bottom: 1.4rem; font-size: .92rem; }
+
+  @media (max-width: 420px) {
+    .opt { font-size: 1.02rem; min-height: 58px; }
+    .mark b { font-size: 1.3rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="mark" id="mark" aria-label="Heimat Distillers">
+    <b>HEIMAT</b><span>DISTILLERS</span>
+  </div>
+  <div class="progress" id="progress" aria-hidden="true"></div>
+</header>
+<main id="main"></main>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------- Inhalte ---------- */
+  var QUESTIONS = [
+    { id: "q1", short: "Aufmerksam geworden durch",
+      text: "Wie bist du auf unseren Messestand aufmerksam geworden?",
+      options: ["Durch die auffällige Standgestaltung", "Durch unser Produktvideo", "Durch persönliche Empfehlung", "Beim Vorbeigehen"] },
+    { id: "q2", short: "Grund für den Besuch",
+      text: "Was hat dich dazu bewegt, unseren Messestand zu besuchen?",
+      options: ["Die Optik und Gestaltung", "Das Produktangebot", "Meine Neugier", "Die persönliche Ansprache"] },
+    { id: "q3", short: "Interesse durch Produktvideo",
+      text: "Hat unser Produktvideo dein Interesse geweckt?",
+      options: ["Ja, auf jeden Fall", "Eher ja", "Eher nein", "Nein"] },
+    { id: "q4", short: "Was besonders anspricht",
+      text: "Was spricht dich an unserem Produkt besonders an?",
+      options: ["Der Geschmack und die Zutaten", "Die alkoholfreie Alternative", "Das Design der Flasche", "Die Markenidee und Philosophie"] },
+    { id: "q5", short: "Ausprobieren / Weiterempfehlen",
+      text: "Wie wahrscheinlich ist es, dass du unser Produkt ausprobieren / weiterempfehlen würdest?",
+      options: ["Sehr wahrscheinlich", "Eher wahrscheinlich", "Eher unwahrscheinlich", "Unwahrscheinlich"] }
+  ];
+
+  var STORAGE_KEY = "heimat-distillers-messeumfrage-v1";
+  var THANKS_MS = 7000;        // Danke-Seite -> automatisch zurück zum Start
+  var IDLE_SURVEY_MS = 90000;  // abgebrochene Umfrage verwerfen
+  var IDLE_ADMIN_MS = 60000;   // Auswertung nicht offen liegen lassen
+  var ADVANCE_MS = 260;        // kurze Bestätigung, bevor die nächste Frage kommt
+
+  var reducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var main = document.getElementById("main");
+  var progress = document.getElementById("progress");
+
+  /* ---------- Speicher (mit Fallback, falls localStorage gesperrt/voll ist) ---------- */
+  var storageOk = true;
+  var responses = (function load() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return [];
+      var data = JSON.parse(raw);
+      if (Array.isArray(data)) return data;
+      throw new Error("Unerwartetes Format");
+    } catch (e) {
+      // Beschädigte Daten nicht stillschweigend überschreiben – erst sichern.
+      try {
+        var broken = localStorage.getItem(STORAGE_KEY);
+        if (broken) localStorage.setItem(STORAGE_KEY + "-backup-" + Date.now(), broken);
+      } catch (e2) { storageOk = false; }
+      return [];
+    }
+  })();
+
+  function persist() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(responses));
+      storageOk = true;
+    } catch (e) {
+      storageOk = false; // Antworten bleiben bis zum Neuladen im Speicher
+    }
+  }
+
+  /* ---------- Zustand ---------- */
+  var state = { screen: "start", idx: 0, answers: {} };
+  var busy = false;
+  var thanksTimer = null;
+  var advanceTimer = null;
+  var lastActivity = Date.now();
+
+  /* ---------- Helfer ---------- */
+  function el(tag, attrs, children) {
+    var node = document.createElement(tag);
+    if (attrs) Object.keys(attrs).forEach(function (k) {
+      if (k === "text") node.textContent = attrs[k];
+      else if (k === "class") node.className = attrs[k];
+      else if (k.slice(0, 2) === "on") node.addEventListener(k.slice(2), attrs[k]);
+      else node.setAttribute(k, attrs[k]);
+    });
+    (children || []).forEach(function (c) { if (c) node.appendChild(c); });
+    return node;
+  }
+
+  function clearTimers() {
+    clearTimeout(thanksTimer); thanksTimer = null;
+    clearTimeout(advanceTimer); advanceTimer = null;
+    busy = false;
+  }
+
+  function go(screen) {
+    clearTimers();
+    state.screen = screen;
+    render();
+  }
+
+  function resetSurvey() {
+    state.idx = 0;
+    state.answers = {};
+    go("start");
+  }
+
+  function renderProgress() {
+    progress.innerHTML = "";
+    var show = state.screen === "q" || state.screen === "thanks";
+    progress.style.visibility = show ? "visible" : "hidden";
+    QUESTIONS.forEach(function (_, i) {
+      var on = state.screen === "thanks" || i <= state.idx;
+      progress.appendChild(el("i", { class: on ? "on" : "" }));
+    });
+  }
+
+  function focusHeading() {
+    var h = main.querySelector("[data-focus]");
+    if (h) h.focus({ preventScroll: true });
+    main.scrollTop = 0;
+  }
+
+  /* ---------- Bildschirme ---------- */
+  function renderStart() {
+    return el("div", { class: "wrap" }, [
+      el("h1", { class: "hero", tabindex: "-1", "data-focus": "", text: "Kurz gefragt." }),
+      el("p", { class: "lead", text: "Fünf Fragen zu deinem Besuch an unserem Stand. Dauert unter einer Minute und ist anonym." }),
+      el("button", { class: "btn", type: "button", text: "Umfrage starten", onclick: function () {
+        state.idx = 0; state.answers = {}; go("q");
+      } })
+    ]);
+  }
+
+  function renderQuestion() {
+    var q = QUESTIONS[state.idx];
+    var list = el("ul", { class: "opts", role: "list" });
+
+    q.options.forEach(function (opt, i) {
+      var btn = el("button", {
+        class: "opt", type: "button",
+        "aria-pressed": state.answers[q.id] === opt ? "true" : "false",
+        onclick: function () { choose(opt, btn); }
+      }, [
+        el("span", { class: "key", "aria-hidden": "true", text: String(i + 1) }),
+        el("span", { text: opt })
+      ]);
+      list.appendChild(el("li", null, [btn]));
+    });
+
+    var back = el("button", {
+      class: "link", type: "button",
+      text: state.idx === 0 ? "Abbrechen" : "Zurück",
+      onclick: function () {
+        if (busy) return;
+        if (state.idx === 0) resetSurvey();
+        else { state.idx--; go("q"); }
+      }
+    });
+
+    return el("div", { class: "wrap" }, [
+      el("div", { class: "count", "aria-hidden": "true" }, [
+        document.createTextNode(String(state.idx + 1)),
+        el("small", { text: "/ " + QUESTIONS.length })
+      ]),
+      el("h1", { class: "q", tabindex: "-1", "data-focus": "",
+        "aria-label": "Frage " + (state.idx + 1) + " von " + QUESTIONS.length + ": " + q.text, text: q.text }),
+      list,
+      el("div", { class: "nav" }, [back, el("span", { class: "hint", text: "Eine Antwort wählen" })])
+    ]);
+  }
+
+  function renderThanks() {
+    return el("div", { class: "wrap" }, [
+      el("h1", { class: "hero", tabindex: "-1", "data-focus": "", text: "Danke dir." }),
+      el("p", { class: "lead", text: "Deine Antworten sind gespeichert. Lass dir gern noch etwas zum Probieren einschenken." }),
+      el("button", { class: "btn ghost", type: "button", text: "Neue Umfrage starten", onclick: resetSurvey }),
+      el("p", { class: "meta", text: "Die Umfrage startet gleich automatisch neu." })
+    ]);
+  }
+
+  function renderAdmin() {
+    var total = responses.length;
+    var blocks = [];
+
+    if (!storageOk) {
+      blocks.push(el("div", { class: "notice", role: "alert",
+        text: "Der Browser speichert gerade nicht dauerhaft. Antworten gehen beim Neuladen verloren – jetzt als CSV exportieren." }));
+    }
+
+    QUESTIONS.forEach(function (q, qi) {
+      var rows = q.options.map(function (opt) {
+        var n = responses.filter(function (r) { return r.answers && r.answers[q.id] === opt; }).length;
+        var pct = total ? Math.round(n / total * 100) : 0;
+        return el("div", { class: "row" }, [
+          el("span", { text: opt }),
+          el("span", { text: n + " (" + pct + " %)" }),
+          el("div", { class: "bar", "aria-hidden": "true" }, [el("div", { style: "width:" + pct + "%" })])
+        ]);
+      });
+      blocks.push(el("section", { class: "stat" }, [el("h3", { text: (qi + 1) + ". " + q.text })].concat(rows)));
+    });
+
+    var delBtn = el("button", { class: "btn ghost warn", type: "button", text: "Alle Antworten löschen" });
+    var disarm = null;
+    delBtn.addEventListener("click", function () {
+      if (delBtn.getAttribute("data-armed") !== "true") {
+        delBtn.setAttribute("data-armed", "true");
+        delBtn.textContent = "Wirklich löschen? Erneut tippen";
+        clearTimeout(disarm);
+        disarm = setTimeout(function () {
+          delBtn.removeAttribute("data-armed");
+          delBtn.textContent = "Alle Antworten löschen";
+        }, 4000);
+        return;
+      }
+      clearTimeout(disarm);
+      responses = [];
+      persist();
+      render();
+    });
+
+    return el("div", { class: "wrap admin" }, [
+      el("h2", { tabindex: "-1", "data-focus": "", text: "Auswertung" }),
+      el("p", { class: "total", text: total === 1 ? "1 Teilnahme gespeichert" : total + " Teilnahmen gespeichert" })
+    ].concat(blocks).concat([
+      el("div", { class: "actions" }, [
+        el("button", { class: "btn", type: "button", text: "Als CSV exportieren", onclick: exportCsv }),
+        delBtn,
+        el("button", { class: "btn ghost", type: "button", text: "Zur Umfrage", onclick: resetSurvey })
+      ])
+    ]));
+  }
+
+  function render() {
+    renderProgress();
+    main.innerHTML = "";
+    var view = state.screen === "q" ? renderQuestion()
+      : state.screen === "thanks" ? renderThanks()
+      : state.screen === "admin" ? renderAdmin()
+      : renderStart();
+    main.appendChild(view);
+    focusHeading();
+  }
+
+  /* ---------- Ablauf ---------- */
+  function choose(opt, btn) {
+    if (busy || state.screen !== "q") return;
+    busy = true;
+    var q = QUESTIONS[state.idx];
+    state.answers[q.id] = opt;
+    main.querySelectorAll(".opt").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+    btn.setAttribute("aria-pressed", "true");
+
+    advanceTimer = setTimeout(function () {
+      busy = false;
+      if (state.screen !== "q") return; // inzwischen zurückgesetzt
+      if (state.idx < QUESTIONS.length - 1) { state.idx++; go("q"); }
+      else finish();
+    }, reducedMotion ? 0 : ADVANCE_MS);
+  }
+
+  function finish() {
+    // Nur vollständige Antworten speichern
+    var complete = QUESTIONS.every(function (q) { return typeof state.answers[q.id] === "string"; });
+    if (!complete) { resetSurvey(); return; }
+
+    responses.push({ ts: new Date().toISOString(), answers: Object.assign({}, state.answers) });
+    persist();
+    state.answers = {};
+    go("thanks");
+    thanksTimer = setTimeout(resetSurvey, THANKS_MS);
+  }
+
+  /* ---------- CSV-Export (Semikolon + BOM, damit Excel DE Umlaute richtig liest) ---------- */
+  function exportCsv() {
+    function esc(v) { return '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"'; }
+    var header = ["Zeitpunkt"].concat(QUESTIONS.map(function (q, i) { return "Frage " + (i + 1) + ": " + q.short; }));
+    var rows = responses.map(function (r) {
+      var d = new Date(r.ts);
+      var when = isNaN(d) ? "" : d.toLocaleString("de-DE");
+      return [when].concat(QUESTIONS.map(function (q) { return (r.answers && r.answers[q.id]) || ""; }));
+    });
+    var csv = "\uFEFF" + [header].concat(rows).map(function (r) { return r.map(esc).join(";"); }).join("\r\n");
+
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "heimat-distillers-umfrage-" + new Date().toISOString().slice(0, 10) + ".csv";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 2000); // Safari braucht die URL kurz länger
+  }
+
+  /* ---------- Versteckter Zugang zur Auswertung: 5× schnell auf das Logo tippen ---------- */
+  var taps = [];
+  document.getElementById("mark").addEventListener("click", function () {
+    var now = Date.now();
+    taps = taps.filter(function (t) { return now - t < 3000; });
+    taps.push(now);
+    if (taps.length >= 5) { taps = []; go("admin"); }
+  });
+
+  /* ---------- Tastatur: 1–4 wählt eine Antwort ---------- */
+  document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+    if (state.screen === "q" && /^[1-4]$/.test(e.key)) {
+      var btns = main.querySelectorAll(".opt");
+      var b = btns[Number(e.key) - 1];
+      if (b) b.click();
+    } else if (state.screen === "admin" && e.key === "Escape") {
+      resetSurvey();
+    }
+  });
+
+  /* ---------- Inaktivität ---------- */
+  ["pointerdown", "keydown", "touchstart"].forEach(function (ev) {
+    document.addEventListener(ev, function () { lastActivity = Date.now(); }, { passive: true });
+  });
+  setInterval(function () {
+    var idle = Date.now() - lastActivity;
+    if ((state.screen === "q" && idle > IDLE_SURVEY_MS) ||
+        (state.screen === "admin" && idle > IDLE_ADMIN_MS)) {
+      resetSurvey();
+    }
+  }, 5000);
+
+  render();
+})();
+</script>
+</body>
+</html>
